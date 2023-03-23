@@ -1,1 +1,7 @@
 *.exe
+# Remove __pycache__ folders
+*/__pycache__/
+# Remove .pyc files
+*.pyc
+# Remove .vscode and its content
+.vscode/
