@@ -2,6 +2,7 @@ import threading
 import os
 from tcolorpy import tcolor
 import time
+import sys
 class Render(threading.Thread):
     """
         CLYDE RENDERER
@@ -50,8 +51,9 @@ class Render(threading.Thread):
         os.system("cls")
         for y in range(self.height):
             for x in range(self.width):
-                print(tcolor(self._frame[y][x][0], color=self._frame[y][x][1]), end=" ")
-            print() # New Line
+                #print()
+                sys.stdout.write(f"{tcolor(self._frame[y][x][0], color=self._frame[y][x][1])} ")
+            sys.stdout.write("\n")#print() # New Line
         
     
     def prepare_frame(self, objects):
@@ -97,16 +99,17 @@ class Render(threading.Thread):
             "center-y":kwargs.get("center-y", None),
             "width":kwargs.get("width", None),
             "height":kwargs.get("height", None),
-            "position":kwargs.get("position", None)
+            "position":kwargs.get("position", None),
+            "color":kwargs.get("color", (255, 255, 255))
         }
         match shape:
             case "rectangle":
                 return self._generate_rectangle(object_shape)
             case "circle":
-                return self._genearte_circle(object_shape)
+                return self._generate_circle(object_shape)
             case _:
                 return "Invalid shape"
-        
+    
     def _generate_rectangle(self, shape: dict):
         """
             Generates rectangle.
@@ -137,7 +140,7 @@ class Render(threading.Thread):
         objects = []
         for y in range(shape["position"][1], shape["height"]):
             for x in range(shape["position"][0], shape["width"]):
-                objects.append((x, y, "H", (255, 255, 255)))
+                objects.append((x, y, "H", shape["color"]))
         return objects
         
 

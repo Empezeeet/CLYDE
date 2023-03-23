@@ -1,7 +1,7 @@
-import main
+import python.main as main
 import random
 import time
-
+import sys
 
 renderer = main.Render(width=20, height=10, fps=5)
 
@@ -34,15 +34,19 @@ renderer.render_frame()
 
 
 
-
+start_time = time.time()
 while True:
+    
     #objects = [(random.randint(1, 10), random.randint(1, 10), random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))) for i in range(10)]
-    objects += fl_oor
+    #objects += fl_oor
     objects += renderer.generate_shape("rectangle", x=5, y=5, width=7, height=7, color=(255, 255, 255), position=(1, 1))
     
     
     renderer.prepare_frame(objects)
     renderer.render_frame()
+    with open("test.txt", "w") as f:
+        f.write(f"{time.time() - start_time}")
+    time.sleep(1/renderer.fps)
     
    
 
