@@ -13,3 +13,6 @@ Use clyde_renderer.py or renderer.h like this:
         import clyde_renderer
             or 
         #include "renderer.h"
+
+
+## test.* files are used to test rendering engine. You don't need them

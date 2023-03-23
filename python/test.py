@@ -1,9 +1,9 @@
-import python.main as main
+import python.clyde_renderer as clyde_renderer
 import random
 import time
 import sys
 
-renderer = main.Render(width=20, height=10, fps=5)
+clyde_renderer = clyde_renderer.Render(width=20, height=10, fps=5)
 
 
 # Full list of random objects for test
@@ -23,14 +23,14 @@ objects = [
 
 
 fl_oor = [
-    (x, renderer.height-2, "0", (255, 255, 255)) for x in range(renderer.width)
+    (x, clyde_renderer.height-2, "0", (255, 255, 255)) for x in range(clyde_renderer.width)
 ]
 print(fl_oor)
 
-renderer.prepare_frame(objects + fl_oor)
+clyde_renderer.prepare_frame(objects + fl_oor)
 
 # print the frame
-renderer.render_frame()
+clyde_renderer.render_frame()
 
 
 
@@ -39,14 +39,12 @@ while True:
     
     #objects = [(random.randint(1, 10), random.randint(1, 10), random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))) for i in range(10)]
     #objects += fl_oor
-    objects += renderer.generate_shape("rectangle", x=5, y=5, width=7, height=7, color=(255, 255, 255), position=(1, 1))
+    objects += clyde_renderer.generate_shape("rectangle", x=5, y=5, width=7, height=7, color=(255, 255, 255), position=(1, 1))
     
     
-    renderer.prepare_frame(objects)
-    renderer.render_frame()
-    with open("test.txt", "w") as f:
-        f.write(f"{time.time() - start_time}")
-    time.sleep(1/renderer.fps)
+    clyde_renderer.prepare_frame(objects)
+    clyde_renderer.render_frame()
+    time.sleep(1/clyde_renderer.fps)
     
    
 
