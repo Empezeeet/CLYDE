@@ -41,7 +41,11 @@ namespace clyde {
 
     
 
-            void prepare_frame(object_list objects) {
+            std::vector< std::vector<char> > prepare_frame(object_list objects) {
+                // Prepare frame
+                // Returns frame
+                // You can use this function to prepare a frame but not show in CLI.
+                
                 // Clear frame
                 for (int y=0; y<get_height(); y++) {
                     for (int x=0; x<get_width(); x++) {
@@ -52,7 +56,7 @@ namespace clyde {
                     // Object: {'0', '1', 'A'}
                     frame[ int(objects[i][0] - '0') ][ int(objects[i][1] - '0') ]  = objects[i][2];
                 }
-
+                return frame;
             }
             void render_frame() {
                 system("cls");
@@ -79,10 +83,6 @@ namespace clyde {
                 switch (c) {
                     case 'r':
                         return this->generate_rectangle(x, y, w, h);
-                    case 't':
-                        return this->generate_triangle(x, y, w, h);
-                    case 'c':
-                        return this->generate_circle(x, y, w, h);
                     default:
                         return { {'n'} };
                 }
@@ -117,17 +117,7 @@ namespace clyde {
 
                     return rectangle;
                 }
-                object_list generate_triangle(int x, int y, int w, int h) {
-                    object_list triangle;
-
-
-                    return triangle;
-                }
-                object_list generate_circle(int x, int y, int w, int h) {
-                    object_list circle;
-
-                    return circle;
-                }
+                
                 
         
     };

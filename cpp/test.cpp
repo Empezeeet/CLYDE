@@ -9,10 +9,10 @@ using namespace std;
 
 int main() {
 
-    clyde::Renderer ren(32, 32, 5);
+    clyde::Renderer ren(64, 64, 5);
     clyde::Renderer::object_list objects = {{'0', '1', 'A'}};
     clyde::Renderer::object_list floor = {{'0', '1', 'A'}};
-    std::chrono::milliseconds timespan(100);
+    std::chrono::milliseconds timespan(16);
     
     ren.prepare_frame(objects);
     
@@ -37,7 +37,7 @@ int main() {
                     {char(i+1 + '0'), char(j-1 + '0'), '<'}, //  Bottom left
                     {char(i+1 + '0'), char(j + '0'), '='}, //  Bottom
                     {char(i+1 + '0'), char(j+1 + '0'), '>'}, // Bottom right
-                
+
                 };
                 ren.prepare_frame(objects);
                 ren.render_frame();
