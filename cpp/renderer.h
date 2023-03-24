@@ -4,7 +4,14 @@
 
 namespace clyde {
     
-    
+    enum FPS {
+        FPS_60 = 16,
+        FPS_30 = 33,
+        FPS_15 = 66,
+        FPS_10 = 100,
+        FPS_5 = 200,
+        FPS_1 = 1000
+    };
     
     class Renderer {
 
@@ -17,7 +24,7 @@ namespace clyde {
             typedef std::vector< std::vector<char> > object_list;
             std::vector< std::vector<char> > frame;
             
-            Renderer(int w, int h, int f) {
+            Renderer(int w, int h, FPS f) {
                 // Initialize renderer
                 // w = width
                 // h = height
@@ -68,7 +75,7 @@ namespace clyde {
                 }
             }
             void mainloop() {
-                
+
             }
 
 
