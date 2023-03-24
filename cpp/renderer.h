@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream>
-
+#include <windows.h>
 
 namespace clyde {
     
@@ -15,10 +15,8 @@ namespace clyde {
             int fps;
            
             typedef std::vector< std::vector<char> > object_list;
-            //std::vector< std::vector<char> > frame(10, std::vector<char>(10));
-            // create vector of vector of chars with size 10x10
-            std::vector< std::vector<char> > frame = std::vector< std::vector<char> >(10, std::vector<char>(10));
-
+            std::vector< std::vector<char> > frame;
+            
             Renderer(int w, int h, int f) {
                 // Initialize renderer
                 // w = width
@@ -28,6 +26,8 @@ namespace clyde {
                 width = w;
                 height = h;
                 fps = f;
+                ShowConsoleCursor(false);
+                frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
                 // Initialize frame
                 for (int y=0; y<h; y++) {
                     for (int x=0; x<=w; x++) {
@@ -39,7 +39,7 @@ namespace clyde {
             int get_width() { return width; }
             int get_height() { return height; }
 
-
+    
 
             void prepare_frame(object_list objects) {
                 // Clear frame
@@ -88,6 +88,16 @@ namespace clyde {
                 }
 
                 return { {'n'} };
+            }
+            void ShowConsoleCursor(bool showFlag)
+            {
+                HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+                CONSOLE_CURSOR_INFO     cursorInfo;
+
+                GetConsoleCursorInfo(out, &cursorInfo);
+                cursorInfo.bVisible = showFlag; // set the cursor visibility
+                SetConsoleCursorInfo(out, &cursorInfo);
             }
             private: 
 

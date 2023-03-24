@@ -15,6 +15,8 @@ Use clyde_renderer.py or renderer.h like this:
         #include "renderer.h"
 
 
+Python version is slower. 
+
 
 
 
