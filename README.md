@@ -15,4 +15,8 @@ Use clyde_renderer.py or renderer.h like this:
         #include "renderer.h"
 
 
-## test.* files are used to test rendering engine. You don't need them
+
+
+
+test.* files are used to test rendering engine. You don't need them
+***You can use them as examples***
