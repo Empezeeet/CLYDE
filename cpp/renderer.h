@@ -27,12 +27,12 @@ namespace clyde {
                 height = h;
                 fps = f;
                 ShowConsoleCursor(false);
+                // Initialize frame and clear frame
                 frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
-                // Initialize frame
+                
                 for (int y=0; y<h; y++) {
                     for (int x=0; x<=w; x++) {
-                        
-                            frame[y][x] = ' ';
+                        frame[y][x] = ' ';
                     }
                 }
             }
@@ -45,7 +45,7 @@ namespace clyde {
                 // Prepare frame
                 // Returns frame
                 // You can use this function to prepare a frame but not show in CLI.
-                
+
                 // Clear frame
                 for (int y=0; y<get_height(); y++) {
                     for (int x=0; x<get_width(); x++) {
@@ -67,6 +67,12 @@ namespace clyde {
                     std::cout << std::endl;
                 }
             }
+            void mainloop() {
+                
+            }
+
+
+
             object_list generate_shape(int x, int y, int w, int h, char c) {
                 // Generate a shape
                 // x = x position

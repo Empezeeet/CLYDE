@@ -15,7 +15,14 @@ Use clyde_renderer.py or renderer.h like this:
         #include "renderer.h"
 
 
-Python version is slower. 
+
+
+# Use cases
+Python version is better for rendering smaller objects and/or when FPS are not so important
+For example in Discord Bot's games
+
+C++ is better when FPS are important.
+For example in CommandLine games
 
 
 

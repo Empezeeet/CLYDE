@@ -1,8 +1,6 @@
-import python.clyde_renderer as clyde_renderer
-import random
+import clyde_renderer as clyde_renderer
 import time
-import sys
-
+import random
 clyde_renderer = clyde_renderer.Render(width=20, height=10, fps=5)
 
 
@@ -36,11 +34,17 @@ clyde_renderer.render_frame()
 
 start_time = time.time()
 while True:
-    
-    #objects = [(random.randint(1, 10), random.randint(1, 10), random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))) for i in range(10)]
-    #objects += fl_oor
-    objects += clyde_renderer.generate_shape("rectangle", x=5, y=5, width=7, height=7, color=(255, 255, 255), position=(1, 1))
-    
+    objects = [ 
+        (random.randint(1, 9), random.randint(1, 9), "A", (255, 12, 102)),
+        (random.randint(1, 9), random.randint(1, 9), "B", (52, 255, 255)),
+        (random.randint(1, 9), random.randint(1, 9), "C", (255, 255, 65)),
+        (random.randint(1, 9), random.randint(1, 9), "D", (255, 255, 255)),
+        (random.randint(1, 9), random.randint(1, 9), "E", (255, 52, 255)),
+        (random.randint(1, 9), random.randint(1, 9), "F", (0, 0, 0)),
+        (random.randint(1, 9), random.randint(1, 9), "G", (5, 5, 5)),
+        (random.randint(1, 9), random.randint(1, 9), "H", (205, 15, 23)),
+        (random.randint(1, 9), random.randint(1, 9), "I", (213, 123, 123))
+    ]
     
     clyde_renderer.prepare_frame(objects)
     clyde_renderer.render_frame()
