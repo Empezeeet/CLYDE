@@ -2,10 +2,24 @@
 #include <iostream>
 #include <thread>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+   #define CLEAR "cls"
+#elif __APPLE__
+    #define CLEAR "clear"
+#elif __linux__
+    #define CLEAR "clear"
+#elif __unix__ // all unices not caught above
+    #define CLEAR "clear"
+#endif
+
+
+
+
 //#include <windows.h>
 
 namespace clyde {
-    
+    typedef std::vector< std::vector<char> > object_list;
+
     enum FPS {
         FPS_60 = 16,
         FPS_30 = 33,
@@ -14,17 +28,21 @@ namespace clyde {
         FPS_5 = 200,
         FPS_1 = 1000
     };    
+    
+
+
+
+
     class Renderer {
+        private:
+            object_list _objects;
 
         public:
-            typedef std::vector< std::vector<char> > object_list;
             std::vector< std::vector<char> > frame;
             int width;
             int height;
             int fps;
             bool running=false;
-            object_list _objects;
-
 
 
             
@@ -46,56 +64,15 @@ namespace clyde {
                         frame[y][x] = ' ';
                     }
                 }
-                // Run mainloop thread
-
-               this->run();
-		
+                		
 	        }
             int get_width() { return width; }
             int get_height() { return height; }
             
-            void run() {
-                this->running = true;
-                // run mainloop functions in new thread
-                std::thread t(&Renderer::mainloop, this, 'a');
-            }
-            void stop() {
-                this->running = false;
-            }
 
             void prepare_objects(object_list objects) {
                 this->_objects = objects;
             }
-            std::vector< std::vector<char> > prepare_frame(object_list objects) {
-                // Prepare frame
-                // Returns frame
-                // You can use this function to prepare a frame but not show in CLI.
-
-                // Clear frame
-                for (int y=0; y<get_height(); y++) {
-                    for (int x=0; x<get_width(); x++) {
-                        frame[y][x] = ' ';
-                    }
-                }
-                for (int i=0; i<objects.size(); i++) {
-                    // Object: {'0', '1', 'A'}
-                    frame[ int(objects[i][0] - '0') ][ int(objects[i][1] - '0') ]  = objects[i][2];
-                }
-                return frame;
-            }
-            void render_frame() {
-                system("cls");
-                for (int y=0; y<height; y++) {
-                    for (int x=0; x<width; x++) {
-                        std::cout << this->frame[y][x];
-                    }
-                    std::cout << std::endl;
-                }
-            }
-            
-
-
-
             object_list generate_shape(int x, int y, int w, int h, char c) {
                 // Generate a shape
                 // x = x position
@@ -118,34 +95,80 @@ namespace clyde {
 
                 return { {'n'} };
             }
-            private: 
-                void mainloop(char dummy) {   
-                    while (this->running) {
-                        prepare_frame(this->_objects);
-                        render_frame();
-                        std::this_thread::sleep_for(std::chrono::milliseconds(this->fps));
-                    
-                    }
-                }
-                object_list generate_rectangle(int x, int y, int w, int h) {
-                    // x: x of top left corner
-                    // y: y of top left corner
-                    // w: width
-                    // h: height
-                    object_list rectangle;
-                    rectangle.push_back({ char(x + '0'), char(y + '0'), 'A' });
-                    for (int i=0; i<h; i++) {
-                        
-                        for (int j=0; j<w; j++) {
-                            rectangle.push_back({ char(x + j + '0'), char(y + i + '0'), 'B' });
-                        }
-                    }
+            std::vector< std::vector<char> > prepare_frame(object_list objects) {
+                // Prepare frame
+                // Returns frame
+                // You can use this function to prepare a frame but not show in CLI.
 
-                    return rectangle;
+                // Clear frame
+                for (int y=0; y<get_height(); y++) {
+                    for (int x=0; x<get_width(); x++) {
+                        frame[y][x] = ' ';
+                    }
                 }
-                
-                
-        
+                for (int i=0; i<objects.size(); i++) {
+                    // Object: {'0', '1', 'A'}
+                    frame[ int(objects[i][0] - '0') ][ int(objects[i][1] - '0') ]  = objects[i][2];
+                }
+                return frame;
+            }
+            void render_frame() {
+                system(CLEAR);
+                for (int y=0; y<height; y++) {
+                    for (int x=0; x<width; x++) {
+                        std::cout << this->frame[y][x];
+                    }
+                    std::cout << std::endl;
+                }
+            }  
+        private:
+
+                          
+            object_list generate_rectangle(int x, int y, int w, int h) {
+                // x: x of top left corner
+                // y: y of top left corner
+                // w: width
+                // h: height
+                object_list rectangle;
+                rectangle.push_back({ char(x + '0'), char(y + '0'), 'A' });
+                for (int i=0; i<h; i++) {
+                    
+                    for (int j=0; j<w; j++) {
+                        rectangle.push_back({ char(x + j + '0'), char(y + i + '0'), 'B' });
+                    }
+                }
+
+                return rectangle;
+            }
+            
+            
+    
     };
+
+    class RendererHandler {
+        private:
+            Renderer ren; 
+        public:
+            int width;
+            int height;
+            FPS fps;
+            
+            RendererHandler(int w, int h, FPS f) : ren(w, h, f) {
+                this->width = w;
+                this->height = h;
+                this->fps = f;
+
+            }
+            
+
+            void render(object_list objects) {
+                ren.prepare_objects(objects);
+                ren.prepare_frame(objects);
+                ren.render_frame();
+            }
+
+    };  
+
+
 }
     
