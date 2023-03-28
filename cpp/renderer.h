@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
-#include <windows.h>
+#include <thread>
+
+//#include <windows.h>
 
 namespace clyde {
     
@@ -11,18 +13,21 @@ namespace clyde {
         FPS_10 = 100,
         FPS_5 = 200,
         FPS_1 = 1000
-    };
-    
+    };    
     class Renderer {
 
         public:
-
+            typedef std::vector< std::vector<char> > object_list;
+            std::vector< std::vector<char> > frame;
             int width;
             int height;
             int fps;
-           
-            typedef std::vector< std::vector<char> > object_list;
-            std::vector< std::vector<char> > frame;
+            bool running=false;
+            object_list _objects;
+
+
+
+            
             
             Renderer(int w, int h, FPS f) {
                 // Initialize renderer
@@ -33,7 +38,6 @@ namespace clyde {
                 width = w;
                 height = h;
                 fps = f;
-                ShowConsoleCursor(false);
                 // Initialize frame and clear frame
                 frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
                 
@@ -42,12 +46,26 @@ namespace clyde {
                         frame[y][x] = ' ';
                     }
                 }
-            }
+                // Run mainloop thread
+
+               this->run();
+		
+	        }
             int get_width() { return width; }
             int get_height() { return height; }
+            
+            void run() {
+                this->running = true;
+                // run mainloop functions in new thread
+                std::thread t(&Renderer::mainloop, this, 'a');
+            }
+            void stop() {
+                this->running = false;
+            }
 
-    
-
+            void prepare_objects(object_list objects) {
+                this->_objects = objects;
+            }
             std::vector< std::vector<char> > prepare_frame(object_list objects) {
                 // Prepare frame
                 // Returns frame
@@ -74,9 +92,7 @@ namespace clyde {
                     std::cout << std::endl;
                 }
             }
-            void mainloop() {
-
-            }
+            
 
 
 
@@ -102,18 +118,15 @@ namespace clyde {
 
                 return { {'n'} };
             }
-            void ShowConsoleCursor(bool showFlag)
-            {
-                HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-
-                CONSOLE_CURSOR_INFO     cursorInfo;
-
-                GetConsoleCursorInfo(out, &cursorInfo);
-                cursorInfo.bVisible = showFlag; // set the cursor visibility
-                SetConsoleCursorInfo(out, &cursorInfo);
-            }
             private: 
-
+                void mainloop(char dummy) {   
+                    while (this->running) {
+                        prepare_frame(this->_objects);
+                        render_frame();
+                        std::this_thread::sleep_for(std::chrono::milliseconds(this->fps));
+                    
+                    }
+                }
                 object_list generate_rectangle(int x, int y, int w, int h) {
                     // x: x of top left corner
                     // y: y of top left corner
