@@ -99,7 +99,6 @@ namespace clyde {
 
                 return  {{{0, 0, 'n'}}};
             }
-            
             void clear_frame() {
                 if (!this->frame.empty()) {
                     for (int y=0; y<=get_height()-1; y++) {

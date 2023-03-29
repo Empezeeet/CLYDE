@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "clyde.h"
 #include <chrono>
 
 
@@ -8,7 +8,7 @@ int main() {
     clyde::Renderer ren(64, 32, clyde::FPS_30);
     clyde::object_list objects = {{1, 0, 'A'}};
     std::chrono::milliseconds timespan(ren.fps);
-    
+
 
     while (true) {
         for (int i=1; i<ren.get_height()-1; i++) {
@@ -24,8 +24,6 @@ int main() {
 
 
     }
-    
-    
     
 
 
