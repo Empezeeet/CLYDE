@@ -3,4 +3,6 @@
 **/__pycache__/
 # Remove .pyc files
 *.pyc
-
+*.out
+.DS_Store
+*.plist

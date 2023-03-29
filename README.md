@@ -4,15 +4,10 @@ This is joke. but it works
 
 You can create simple shapes with this graphic engine.
 
-Currently writing C++11 Version for better efficiency.
-
+For now, python version is deprecated. Use C++ version instead
 # How to use?
 ###### Don't
-Use clyde_renderer.py or renderer.h like this:
-    
-        import clyde_renderer
-            or 
-        #include "renderer.h"
+Download renderer.h or clyde_renderer.py and put it in your project folder and imoport it
 
 
 

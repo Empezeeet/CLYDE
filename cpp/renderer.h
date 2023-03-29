@@ -1,28 +1,56 @@
 #include <vector>
 #include <iostream>
-#include <windows.h>
+#include <thread>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+   #define CLEAR "cls"
+#elif __APPLE__
+    #define CLEAR "clear"
+#else
+    #define CLEAR "clear"
+#endif
+
+
+
+
+//#include <windows.h>
 
 namespace clyde {
     
+
     enum FPS {
         FPS_60 = 16,
         FPS_30 = 33,
         FPS_15 = 66,
         FPS_10 = 100,
         FPS_5 = 200,
+        FPS_2 = 500,
         FPS_1 = 1000
+    };    
+   
+    struct Object {
+        int x;
+        int y;
+        char letter;
+        Object(int x, int y, char letter) : x(x), y(y), letter(letter) {}
     };
-    
+
+    typedef std::vector<Object> object_list;
+
     class Renderer {
+        private:
+            object_list _objects;
 
         public:
-
+            std::vector< std::vector<char> > frame;
             int width;
             int height;
             int fps;
-           
-            typedef std::vector< std::vector<char> > object_list;
-            std::vector< std::vector<char> > frame;
+            bool running=false;
+            // pointer to frame variable
+            std::vector< std::vector<char> > *frame_ptr = &frame;
+
+            
             
             Renderer(int w, int h, FPS f) {
                 // Initialize renderer
@@ -33,53 +61,22 @@ namespace clyde {
                 width = w;
                 height = h;
                 fps = f;
-                ShowConsoleCursor(false);
                 // Initialize frame and clear frame
-                frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
+                this->frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
                 
-                for (int y=0; y<h; y++) {
-                    for (int x=0; x<=w; x++) {
-                        frame[y][x] = ' ';
-                    }
-                }
+                this->clear_frame();
+                		
+	        }
+            int get_width() { return this->width; }
+            int get_height() { return this->height; }
+            // If you want to have output in CLI, use this. 
+            void render(object_list objs) {
+                this->prepare_objects(objs);
+                this->prepare_frame(this->_objects);
+                this->render_frame();
             }
-            int get_width() { return width; }
-            int get_height() { return height; }
-
-    
-
-            std::vector< std::vector<char> > prepare_frame(object_list objects) {
-                // Prepare frame
-                // Returns frame
-                // You can use this function to prepare a frame but not show in CLI.
-
-                // Clear frame
-                for (int y=0; y<get_height(); y++) {
-                    for (int x=0; x<get_width(); x++) {
-                        frame[y][x] = ' ';
-                    }
-                }
-                for (int i=0; i<objects.size(); i++) {
-                    // Object: {'0', '1', 'A'}
-                    frame[ int(objects[i][0] - '0') ][ int(objects[i][1] - '0') ]  = objects[i][2];
-                }
-                return frame;
-            }
-            void render_frame() {
-                system("cls");
-                for (int y=0; y<height; y++) {
-                    for (int x=0; x<width; x++) {
-                        std::cout << this->frame[y][x];
-                    }
-                    std::cout << std::endl;
-                }
-            }
-            void mainloop() {
-
-            }
-
-
-
+            
+            
             object_list generate_shape(int x, int y, int w, int h, char c) {
                 // Generate a shape
                 // x = x position
@@ -88,8 +85,8 @@ namespace clyde {
                 // h = height
                 // c = type of shape:
                 //    - 'r' = rectangle
-                //    - 't' = triangle
-                //    - 'c' = circle
+                //    - 't' = triangle // doesn't work yet
+                //    - 'c' = circle // doesn't work yet
                 // Returns object_list with shape
                 // Returns { {'n'} } when shape is not recognized
                 object_list shape;
@@ -97,42 +94,82 @@ namespace clyde {
                     case 'r':
                         return this->generate_rectangle(x, y, w, h);
                     default:
-                        return { {'n'} };
+                        return { {{0, 0, 'n'}} };
                 }
 
-                return { {'n'} };
+                return  {{{0, 0, 'n'}}};
             }
-            void ShowConsoleCursor(bool showFlag)
-            {
-                HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-
-                CONSOLE_CURSOR_INFO     cursorInfo;
-
-                GetConsoleCursorInfo(out, &cursorInfo);
-                cursorInfo.bVisible = showFlag; // set the cursor visibility
-                SetConsoleCursorInfo(out, &cursorInfo);
-            }
-            private: 
-
-                object_list generate_rectangle(int x, int y, int w, int h) {
-                    // x: x of top left corner
-                    // y: y of top left corner
-                    // w: width
-                    // h: height
-                    object_list rectangle;
-                    rectangle.push_back({ char(x + '0'), char(y + '0'), 'A' });
-                    for (int i=0; i<h; i++) {
-                        
-                        for (int j=0; j<w; j++) {
-                            rectangle.push_back({ char(x + j + '0'), char(y + i + '0'), 'B' });
+            
+            void clear_frame() {
+                if (!this->frame.empty()) {
+                    for (int y=0; y<=get_height()-1; y++) {
+                        for (int x=0; x<=get_width()-1; x++) {
+                            this->frame[y][x] = ' ';
                         }
                     }
-
-                    return rectangle;
                 }
                 
+            }
+            std::vector< std::vector<char> > prepare_frame(object_list objects) {
+                // Prepare frame
+                // Returns frame
+                // You can use this function to prepare a frame but not show in CLI.
+
+                // Clear frame
+                this->clear_frame();
+                if (!objects.empty()) {
+                    for (int i=0; i<=objects.size(); i++) {
                 
+                        // use frame_ptr to set object at its position in frame variable
+                        if (objects[i].x > this->get_width()-1) continue;
+                        if (objects[i].y > this->get_height()-1) continue;
+
+                        //frame[objects[i].x][objects[i].y] = objects[i].letter;
+                        // do the same like above but using frame pointer
+                        this->frame_ptr->at(objects[i].y).at(objects[i].x) = objects[i].letter;
+                    
+                    }
+                }
+                
+                return this->frame; 
+            }
+             
+            void prepare_objects(object_list objects) {
+                this->_objects = objects;
+            }
+            
+            void render_frame() {
+                    system(CLEAR);
+                    for (int y=0; y<this->get_height()-1; y++) {
+                        for (int x=0; x<this->get_width()-1; x++) {
+                            std::cout << this->frame[y][x];
+                        }
+                        std::cout << std::endl;
+                    }
+                } 
         
+        private:  
+                   
+            object_list generate_rectangle(int x, int y, int w, int h) {
+                // x: x of top left corner
+                // y: y of top left corner
+                // w: width
+                // h: height
+                
+                object_list rectangle;
+                for (int i=0; i<h; i++) {
+                    for (int j=0; j<w; j++) {
+                        if (x+j > width-1) continue;
+                        if (y+i > height-1) continue;
+                        rectangle.push_back({Object(x+j, y+i, 'B')});
+                    }
+                }
+
+                return rectangle;
+            }
+            
+            
+    
     };
 }
     
