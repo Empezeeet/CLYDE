@@ -67,17 +67,16 @@ namespace clyde {
                 this->clear_frame();
                 		
 	        }
-            int get_width() { return width; }
-            int get_height() { return height; }
-            
+            int get_width() { return this->width; }
+            int get_height() { return this->height; }
+            // If you want to have output in CLI, use this. 
             void render(object_list objs) {
                 this->prepare_objects(objs);
                 this->prepare_frame(this->_objects);
                 this->render_frame();
             }
-            void prepare_objects(object_list objects) {
-                this->_objects = objects;
-            }
+            
+            
             object_list generate_shape(int x, int y, int w, int h, char c) {
                 // Generate a shape
                 // x = x position
@@ -86,8 +85,8 @@ namespace clyde {
                 // h = height
                 // c = type of shape:
                 //    - 'r' = rectangle
-                //    - 't' = triangle
-                //    - 'c' = circle
+                //    - 't' = triangle // doesn't work yet
+                //    - 'c' = circle // doesn't work yet
                 // Returns object_list with shape
                 // Returns { {'n'} } when shape is not recognized
                 object_list shape;
@@ -100,6 +99,7 @@ namespace clyde {
 
                 return  {{{0, 0, 'n'}}};
             }
+            
             void clear_frame() {
                 if (!this->frame.empty()) {
                     for (int y=0; y<=get_height()-1; y++) {
@@ -121,33 +121,46 @@ namespace clyde {
                     for (int i=0; i<=objects.size(); i++) {
                 
                         // use frame_ptr to set object at its position in frame variable
-                        frame[objects[i].x][objects[i].y] = objects[i].letter;
-                    
+                        if (objects[i].x > this->get_width()-1) continue;
+                        if (objects[i].y > this->get_height()-1) continue;
+
+                        //frame[objects[i].x][objects[i].y] = objects[i].letter;
+                        // do the same like above but using frame pointer
+                        this->frame_ptr->at(objects[i].y).at(objects[i].x) = objects[i].letter;
                     
                     }
                 }
                 
                 return this->frame; 
             }
+             
+            void prepare_objects(object_list objects) {
+                this->_objects = objects;
+            }
+            
             void render_frame() {
-                system(CLEAR);
-                for (int y=0; y<height-1; y++) {
-                    for (int x=0; x<width-1; x++) {
-                        std::cout << this->frame[y][x];
+                    system(CLEAR);
+                    for (int y=0; y<this->get_height()-1; y++) {
+                        for (int x=0; x<this->get_width()-1; x++) {
+                            std::cout << this->frame[y][x];
+                        }
+                        std::cout << std::endl;
                     }
-                    std::cout << std::endl;
-                }
-            }  
-        private:         
+                } 
+        
+        private:  
+                   
             object_list generate_rectangle(int x, int y, int w, int h) {
                 // x: x of top left corner
                 // y: y of top left corner
                 // w: width
                 // h: height
-
+                
                 object_list rectangle;
                 for (int i=0; i<h; i++) {
                     for (int j=0; j<w; j++) {
+                        if (x+j > width-1) continue;
+                        if (y+i > height-1) continue;
                         rectangle.push_back({Object(x+j, y+i, 'B')});
                     }
                 }
