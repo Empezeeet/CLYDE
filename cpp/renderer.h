@@ -27,6 +27,7 @@ namespace clyde {
         FPS_2 = 500,
         FPS_1 = 1000
     };    
+   
     struct Object {
         int x;
         int y;
@@ -35,14 +36,6 @@ namespace clyde {
     };
 
     typedef std::vector<Object> object_list;
-    /*
-        STD::VECTOR< ... >{ 
-            STD::VECTOR<OBJECT>{ OBJECT{}, OBJECT{}, OBJECT{} },
-        }
-    
-    
-    
-    */
 
     class Renderer {
         private:

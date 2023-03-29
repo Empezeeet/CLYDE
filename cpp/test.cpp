@@ -15,7 +15,7 @@ int main() {
         for (int i=1; i<ren.get_height()-1; i++) {
             for (int j=1; j<ren.get_width()-1; j++) {
                 
-                // Fill objects with objects that are specified above (in comment)
+                /*
                 objects = {
                     clyde::Object(i-1, j-1, '<'), //  Top left
                     clyde::Object(i-1, j, '='), //  Top
@@ -29,9 +29,9 @@ int main() {
                     clyde::Object(i+1, j, '='), //  Bottom
                     clyde::Object(i+1, j+1, '>'), // Bottom right
                 };
-                
+                */
                 // Render objects
-
+                objects = ren.generate_shape(i, j, 3, 3, 'r');
                 ren.prepare_frame(objects);
                 ren.render_frame();
                 std::this_thread::sleep_for(timespan);
