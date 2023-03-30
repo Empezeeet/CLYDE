@@ -5,6 +5,7 @@ This is joke. but it works
 You can create simple shapes with this graphic engine.
 
 For now, python version is deprecated. Use C++ version instead
+Python version will be rewritten in the future
 # How to use?
 ###### Don't
 Download renderer.h or clyde_renderer.py and put it in your project folder and imoport it
