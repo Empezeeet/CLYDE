@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
-#include "clyde.h"
-#include "main.cpp"
+#include "clyde-rgb.h"
+#include <string>
 namespace clydeSDL {
 
     class CSDL {
@@ -8,24 +8,27 @@ namespace clydeSDL {
         private:
             unsigned int window_width;
             unsigned int window_height;
-            std::string window_title;
             clyde::FPS fps;
-            clyde::Renderer CRenderer;
+            
+            clyde::Frame window_frame;
+            clyde::Renderer *CRenderer;
+            
 
         public:
-            // constructor
-            CSDL(unsigned int width, unsigned int height, clyde::FPS fps, std::string title) {
+            SDL_Window* window;
+            SDL_Renderer *render;
+            CSDL(unsigned int width, unsigned int height, clyde::FPS fps) {
                 
                 // variables
                 this->window_width = width;
                 this->window_height = height;
                 this->fps = fps;
-                this->window_title = title;
                 
                 // CLYDE
 
-                this->CRenderer = clyde::Renderer(width, height, fps);
-                
+                //clyde::Renderer Renderer(width, height, fps);
+                this->CRenderer = new clyde::Renderer(width, height, fps);
+                this->CRenderer->clear_frame();
 
 
 
@@ -36,14 +39,22 @@ namespace clydeSDL {
                 }
                 if (initializeWindow() == false) {
                     throw "SDL2 window init error";
-                }
+                }             
+                this->mainloop();   
+            }
+            void userTasks() {
 
-                
+               // SDL_SetRenderDrawColor(this->render, 255, 255, 255, 255);
+                //SDL_RenderDrawLine(this->render, 0, 0, 640, 480);
+
+
+
+
             }
         private:
             bool initializeWindow() {
-                SDL_Window* window = SDL_CreateWindow(
-                    this->window_title,               // Tytuł okna
+                this->window = SDL_CreateWindow(
+                    "CSDL-DEMO",                      // Tytuł okna
                     SDL_WINDOWPOS_CENTERED,           // Pozycja X
                     SDL_WINDOWPOS_CENTERED,           // Pozycja Y
                     this->window_width,               // Szerokość okna
@@ -57,6 +68,9 @@ namespace clydeSDL {
                 }
                 return true;
             }
+            void initRender() {
+                this->render = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+            }
             void mainloop() {
                 // Główna pętla zdarzeń
                 SDL_Event event;
@@ -68,14 +82,21 @@ namespace clydeSDL {
                         }
                     }
                     // Tutaj można umieścić kod rysujący na ekranie
+                    this->userTasks();
 
-                    SDL_Delay(16); // Ograniczenie liczby klatek na sekundę
+
+
+
+                    if (SDL_RenderPresent(this->render) != 0) {
+                    }
+                    SDL_Delay(this->fps); // Ograniczenie liczby klatek na sekundę
                 }
 
                 // Zniszczenie okna i wyjście z programu
                 SDL_DestroyWindow(window);
                 SDL_Quit();
             }
+            
     };
 }
 
@@ -85,7 +106,3 @@ namespace clydeSDL {
 
 
 
-int main(int argc, char* argv[]) {
-    
-    return 0;
-}
