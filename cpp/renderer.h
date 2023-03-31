@@ -4,16 +4,20 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
    #define CLEAR "cls"
+   #define OS "WIN"
 #elif __APPLE__
     #define CLEAR "clear"
+    #define OS "MAC"
 #else
     #define CLEAR "clear"
+    #define OS "LINUX"
 #endif
 
+#define HIDE_CURSOR "\e[?25l"
+#define SHOW_CURSOR "\e[?25h"
 
 
 
-//#include <windows.h>
 
 namespace clyde {
     
@@ -61,6 +65,13 @@ namespace clyde {
                 width = w;
                 height = h;
                 fps = f;
+
+                // hide cursor
+                std::cout << HIDE_CURSOR;
+                
+
+
+
                 // Initialize frame and clear frame
                 this->frame = std::vector< std::vector<char> >(h, std::vector<char>(w));
                 

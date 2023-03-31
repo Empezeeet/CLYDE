@@ -1,8 +1,6 @@
 #include "renderer.h"
 #include <chrono>
 
-
-
 int main() {
 
     clyde::Renderer ren(64, 32, clyde::FPS_30);
@@ -21,15 +19,8 @@ int main() {
                 std::this_thread::sleep_for(timespan);
             }
         }
-
-
     }
     
-    
-    
-
-
-
     return 0;
 }
 
