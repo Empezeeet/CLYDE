@@ -1,12 +1,12 @@
 # Command Line 2D Engine (CLYDE)
 
-This is joke. but it works
+This project is made for fun. 
 
 You can create simple shapes with this graphic engine.
 
 For now, python version is deprecated. Use C++ version instead
 # How to use?
-###### Don't
+
 Download renderer.h or clyde_renderer.py and put it in your project folder and imoport it
 
 
